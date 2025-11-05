@@ -1,24 +1,24 @@
-Mobile Application Development 
+#Mobile Application Development 
 
-CTEC3703 
+#CTEC3703 
 
-Coursework 
+#Coursework 
 
-Cafe App 
+#Cafe App 
 
 Student Name: Josh Conrathe 
 
 Student Number: P2774868 
 
-Module Team: 
+#Module Team: 
 
 Dr Ali Jwaid & Dr Usama Mannai & Dr Taha Rassem 
 
 2025/26 
 
-Analysis and design: 
+#Analysis and design: 
  
-Functional Requirements 
+#Functional Requirements 
  
 Customers should be able to register and log in securely to access their account. 
  
