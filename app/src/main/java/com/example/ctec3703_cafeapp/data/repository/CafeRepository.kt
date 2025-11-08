@@ -31,10 +31,6 @@ class CafeRepository(private val db: FirebaseFirestore) {
 
     fun getCart(cartId: String) = cartsCollection.document(cartId)
 
-    fun createCart(cart: Cart) {
-        cartsCollection.document(cart.cartId).set(cart)
-    }
-
     fun updateCart(cart: Cart) {
         cartsCollection.document(cart.cartId).set(cart)
     }
@@ -52,6 +48,4 @@ class CafeRepository(private val db: FirebaseFirestore) {
     fun submitFeedback(feedback: Feedback) {
         feedbackCollection.document(feedback.feedbackId).set(feedback)
     }
-
-    fun getFeedback(feedbackId: String) = feedbackCollection.document(feedbackId)
 }
