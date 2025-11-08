@@ -41,7 +41,6 @@ class AuthViewModel(
 
                     repository.addUser(user)
                     _authState.value = AuthState.Success(user)
-                    mainViewModel.setCurrentUser(user)
 
                 } else {
                     _authState.value = AuthState.Error(task.exception?.message ?: "Registration failed")
