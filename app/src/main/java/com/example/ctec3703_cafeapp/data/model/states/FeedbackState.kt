@@ -1,4 +1,4 @@
-package com.example.ctec3703_cafeapp.data.model
+package com.example.ctec3703_cafeapp.data.model.states
 
 sealed class FeedbackState {
     object Idle : FeedbackState()

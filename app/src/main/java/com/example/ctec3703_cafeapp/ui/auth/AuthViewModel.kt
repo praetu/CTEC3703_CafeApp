@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ctec3703_cafeapp.data.model.User
-import com.example.ctec3703_cafeapp.data.model.AuthState
+import com.example.ctec3703_cafeapp.data.model.states.AuthState
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

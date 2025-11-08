@@ -1,4 +1,6 @@
-package com.example.ctec3703_cafeapp.data.model
+package com.example.ctec3703_cafeapp.data.model.states
+
+import com.example.ctec3703_cafeapp.data.model.User
 
 sealed class AuthState {
     object Idle : AuthState()

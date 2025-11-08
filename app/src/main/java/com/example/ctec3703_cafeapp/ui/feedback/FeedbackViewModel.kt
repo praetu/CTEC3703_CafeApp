@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ctec3703_cafeapp.data.model.Feedback
-import com.example.ctec3703_cafeapp.data.model.FeedbackState
+import com.example.ctec3703_cafeapp.data.model.states.FeedbackState
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
 
 class FeedbackViewModel(
