@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.example.ctec3703_cafeapp.data.model.User
 import com.example.ctec3703_cafeapp.data.model.states.AuthState
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
+import com.example.ctec3703_cafeapp.ui.main.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 class AuthViewModel(
     private val repository: CafeRepository,
+    private val mainViewModel: MainViewModel,
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) : ViewModel() {
 
@@ -39,6 +41,7 @@ class AuthViewModel(
 
                     repository.addUser(user)
                     _authState.value = AuthState.Success(user)
+                    mainViewModel.setCurrentUser(user)
 
                 } else {
                     _authState.value = AuthState.Error(task.exception?.message ?: "Registration failed")
@@ -69,6 +72,7 @@ class AuthViewModel(
 
                             if (user != null) {
                                 _authState.value = AuthState.Success(user)
+                                mainViewModel.setCurrentUser(user)
                             } else {
                                 _authState.value = AuthState.Error("User not found in database")
                             }
@@ -89,5 +93,6 @@ class AuthViewModel(
     fun logout() {
         auth.signOut()
         _authState.value = AuthState.Idle
+        mainViewModel.clearCurrentUser()
     }
 }

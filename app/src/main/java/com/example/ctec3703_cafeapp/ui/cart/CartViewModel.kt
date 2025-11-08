@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import com.example.ctec3703_cafeapp.data.model.Cart
 import com.example.ctec3703_cafeapp.data.model.CartItem
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
+import com.example.ctec3703_cafeapp.ui.main.MainViewModel
 import com.google.firebase.firestore.ListenerRegistration
 
 class CartViewModel(
-    private val repository: CafeRepository
+    private val repository: CafeRepository,
+    private val mainViewModel: MainViewModel
 ) : ViewModel() {
 
     private val _cart = MutableLiveData<Cart>()
@@ -40,6 +42,9 @@ class CartViewModel(
                 if (currentCart != null) {
                     _cart.value = currentCart
                     calculateTotal(currentCart.items)
+
+                    val totalItems = currentCart.items.sumOf { it.quantity }
+                    mainViewModel.updateCartItemCount(totalItems)
                 }
             }
     }
@@ -68,6 +73,10 @@ class CartViewModel(
         }
 
         repository.updateCart(currentCart)
+        _cart.value = currentCart
+
+        val totalItems = currentCart.items.sumOf { it.quantity }
+        mainViewModel.updateCartItemCount(totalItems)
     }
 
 
@@ -77,6 +86,10 @@ class CartViewModel(
         val currentCart = _cart.value ?: return
         currentCart.items = currentCart.items.filter { it.itemId != itemId }
         repository.updateCart(currentCart)
+        _cart.value = currentCart
+
+        val totalItems = currentCart.items.sumOf { it.quantity }
+        mainViewModel.updateCartItemCount(totalItems)
     }
 
     // Calculate total
