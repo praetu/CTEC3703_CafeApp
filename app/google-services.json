@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1024886936665",
+    "project_id": "ctec3703-cafeapp-263e6",
+    "storage_bucket": "ctec3703-cafeapp-263e6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024886936665:android:081c225f925e51d4fc0d48",
+        "android_client_info": {
+          "package_name": "com.example.ctec3703_cafeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIUJEghL1CeiPT7CuzFhyUpAKqF3qB_J8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
