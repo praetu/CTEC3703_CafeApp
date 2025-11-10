@@ -1,4 +1,6 @@
 package com.example.ctec3703_cafeapp.ui.profile
 
-class ProfileFragment {
-}
+import androidx.fragment.app.Fragment
+import com.example.ctec3703_cafeapp.R
+
+class ProfileFragment : Fragment(R.layout.fragment_profile)
