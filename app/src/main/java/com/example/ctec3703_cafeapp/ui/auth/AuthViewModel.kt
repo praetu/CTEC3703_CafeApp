@@ -13,13 +13,11 @@ import com.google.firebase.auth.FirebaseUser
 class AuthViewModel(
     private val repository: CafeRepository,
     private val mainViewModel: MainViewModel,
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
     val authState: LiveData<AuthState> = _authState
-
-    // Register new user
 
     fun register(email: String, password: String, name: String) {
 
@@ -37,8 +35,6 @@ class AuthViewModel(
                         email = firebaseUser?.email ?: ""
                     )
 
-                    // Add user to Firestore
-
                     repository.addUser(user)
                     _authState.value = AuthState.Success(user)
 
@@ -47,8 +43,6 @@ class AuthViewModel(
                 }
             }
     }
-
-    // Login existing user
 
     fun login(email: String, password: String) {
 
@@ -60,8 +54,6 @@ class AuthViewModel(
                 if (task.isSuccessful) {
 
                     val firebaseUser: FirebaseUser? = auth.currentUser
-
-                    // Fetch user document from Firestore
 
                     repository.getUser(firebaseUser?.uid ?: "")
                         .get()
@@ -75,19 +67,16 @@ class AuthViewModel(
                             } else {
                                 _authState.value = AuthState.Error("User not found in database")
                             }
+
                         }
                         .addOnFailureListener { e ->
                             _authState.value = AuthState.Error(e.message ?: "Error fetching user")
                         }
-
                 } else {
                     _authState.value = AuthState.Error(task.exception?.message ?: "Login failed")
                 }
             }
     }
-
-
-    // Logout user
 
     fun logout() {
         auth.signOut()
