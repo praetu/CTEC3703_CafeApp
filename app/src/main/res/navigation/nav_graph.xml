@@ -11,10 +11,10 @@
         android:name="com.example.ctec3703_cafeapp.ui.auth.AuthLandingFragment"
         android:label="Welcome">
         <action
-            android:id="@+id/action_authLanding_to_login"
+            android:id="@+id/action_auth_landing_to_login"
             app:destination="@id/loginFragment" />
         <action
-            android:id="@+id/action_authLanding_to_register"
+            android:id="@+id/action_auth_landing_to_register"
             app:destination="@id/registerFragment" />
     </fragment>
 
