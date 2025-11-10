@@ -20,7 +20,7 @@ class App : Application() {
 
         db = FirebaseFirestore.getInstance()
 
-        // Enable local persistence (optional but recommended)
+        // Enable local persistence
 
         db.firestoreSettings = com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
             .build()
