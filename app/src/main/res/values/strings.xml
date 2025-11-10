@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">CTEC3703 Cafe App</string>
+    <string name="app_name">CoffiCup</string>
     <string name="profile">Profile</string>
     <string name="feedback">Feedback</string>
     <string name="cart">Cart</string>
     <string name="cafe_name">CoffiCup</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
 </resources>

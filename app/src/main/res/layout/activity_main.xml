@@ -10,10 +10,27 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:visibility="gone"
-        app:titleTextColor="@android:color/white"
-        app:title="@string/app_name" />
+        android:background="?attr/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/profileIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_profile"
+            android:contentDescription="@string/profile"
+            android:visibility="gone"
+            android:layout_gravity="end" />
+
+        <ImageButton
+            android:id="@+id/feedbackIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_feedback"
+            android:contentDescription="@string/feedback"
+            android:visibility="gone"
+            android:layout_gravity="start" />
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- NavHostFragment to hold all fragments -->
     <androidx.fragment.app.FragmentContainerView

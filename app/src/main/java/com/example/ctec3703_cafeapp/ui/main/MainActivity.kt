@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         profileIcon = toolbar.findViewById(R.id.profileIcon)
         feedbackIcon = toolbar.findViewById(R.id.feedbackIcon)
 
+        setSupportActionBar(toolbar)
+
         // NavController
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -49,7 +51,6 @@ class MainActivity : AppCompatActivity() {
             if (toolbar.isVisible) {
 
                 toolbar.title = getString(R.string.cafe_name)
-
                 toolbar.navigationIcon =
 
                     if (destination.id in listOf(
@@ -57,7 +58,6 @@ class MainActivity : AppCompatActivity() {
                             R.id.profileFragment,
                             R.id.feedbackFragment
                         )) ContextCompat.getDrawable(this, R.drawable.ic_back)
-
                     else null
 
                 toolbar.setNavigationOnClickListener { navController.popBackStack() }
