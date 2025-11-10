@@ -5,6 +5,8 @@ import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.ctec3703_cafeapp.R
@@ -70,7 +72,12 @@ class MainActivity : AppCompatActivity() {
                 // Top-left feedback icon
 
                 feedbackIcon.visibility =
-                    if (destination.id == R.id.menuFragment) View.VISIBLE else View.GONE
+                    if (destination.id in listOf(R.id.menuFragment, R.id.cartFragment)) View.VISIBLE else View.GONE
+
+                when (destination.id) {
+                    R.id.menuFragment, R.id.profileFragment, R.id.feedbackFragment, R.id.cartFragment -> hideSystemStatusBar()
+                    else -> showSystemStatusBar()
+                }
             }
         }
 
@@ -79,6 +86,18 @@ class MainActivity : AppCompatActivity() {
         profileIcon.setOnClickListener { navController.navigate(R.id.profileFragment) }
         feedbackIcon.setOnClickListener { navController.navigate(R.id.feedbackFragment) }
 
+    }
+
+    private fun hideSystemStatusBar() {
+        val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+        windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    }
+
+    private fun showSystemStatusBar() {
+        val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+        windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
     }
 
     // Handle system back button

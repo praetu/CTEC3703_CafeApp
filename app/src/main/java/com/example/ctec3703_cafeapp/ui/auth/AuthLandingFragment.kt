@@ -18,12 +18,12 @@ class AuthLandingFragment : Fragment(R.layout.fragment_auth_landing) {
         super.onViewCreated(view, savedInstanceState)
 
         // Check if user is already logged in
-        firebaseAuth.currentUser?.let {
-
-            findNavController().navigate(R.id.menuFragment)
-
-            return
-        }
+//        firebaseAuth.currentUser?.let {
+//
+//            findNavController().navigate(R.id.menuFragment)
+//
+//            return
+//        }
 
         val loginButton = view.findViewById<MaterialButton>(R.id.loginButton)
         val registerButton = view.findViewById<MaterialButton>(R.id.registerButton)
