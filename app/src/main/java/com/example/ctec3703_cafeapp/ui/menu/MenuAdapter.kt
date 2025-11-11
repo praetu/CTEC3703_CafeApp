@@ -34,7 +34,7 @@ class MenuAdapter(
 
         fun bind(item: MenuItem) {
             nameText.text = item.name
-            priceText.text = "$${item.price}"
+            priceText.text = "£%.2f".format(item.price)
 
             // Load image with Glide
             Glide.with(itemView)

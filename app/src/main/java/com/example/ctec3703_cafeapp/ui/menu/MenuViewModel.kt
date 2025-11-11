@@ -3,87 +3,91 @@ package com.example.ctec3703_cafeapp.ui.menu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.ctec3703_cafeapp.data.model.Cart
 import com.example.ctec3703_cafeapp.data.model.CartItem
 import com.example.ctec3703_cafeapp.data.model.MenuItem
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.ListenerRegistration
 
 class MenuViewModel(
     private val repository: CafeRepository,
     private val userId: String
 ) : ViewModel() {
 
+    // Menu
     private val _menuItems = MutableLiveData<List<MenuItem>>(emptyList())
     val menuItems: LiveData<List<MenuItem>> = _menuItems
 
-    private val _loading = MutableLiveData(false)
-    val loading: LiveData<Boolean> = _loading
+    private var menuListener: ListenerRegistration? = null
 
-    private val _error = MutableLiveData<String?>(null)
-    val error: LiveData<String?> = _error
+    // Cart
+    private val _cart = MutableLiveData<Cart>()
+    val cart: LiveData<Cart> = _cart
 
-    // LiveData for cart updates
-    private val _cartUpdated = MutableLiveData<Boolean>(false)
+    private val _cartUpdated = MutableLiveData<Boolean>()
     val cartUpdated: LiveData<Boolean> = _cartUpdated
 
-    // Fetch menu safely
+    private var cartListener: ListenerRegistration? = null
+
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
+
+    // Fetch menu items
     fun fetchMenuItems() {
 
-        _loading.value = true
+        menuListener = repository.getMenuItems()
+            .addSnapshotListener { snapshot, exception ->
 
-        viewModelScope.launch(Dispatchers.IO) {
+                if (exception != null) {
+                    _error.value = exception.message
+                    return@addSnapshotListener
+                }
 
-            try {
-                val snapshot = repository.getMenuItems().get().await()
-                val items = snapshot.toObjects(MenuItem::class.java)
-
-                _menuItems.postValue(items)
-            } catch (e: Exception) {
-                _error.postValue(e.message ?: "Failed to load menu")
-            } finally {
-                _loading.postValue(false)
+                _menuItems.value = snapshot?.documents?.mapNotNull { it.toObject(MenuItem::class.java) } ?: emptyList()
             }
-        }
+    }
+
+    // Fetch cart for current user
+    fun fetchCart() {
+
+        cartListener = repository.getCart(userId)
+            .addSnapshotListener { snapshot, exception ->
+
+                if (exception != null) {
+                    _error.value = exception.message
+                    return@addSnapshotListener
+                }
+
+                val currentCart = snapshot?.toObject(Cart::class.java) ?: Cart(cartId = userId, userId = userId)
+                _cart.value = currentCart
+            }
     }
 
     // Add item to cart
-    fun addItemToCart(menuItem: MenuItem) {
+    fun addItemToCart(item: MenuItem) {
 
-        viewModelScope.launch(Dispatchers.IO) {
+        val currentCart = _cart.value ?: Cart(cartId = userId, userId = userId)
+        val updatedItems = currentCart.items.toMutableList()
 
-            try {
-                val cartRef = repository.getCart(userId)
-                val cartSnapshot = cartRef.get().await()
+        val existing = updatedItems.indexOfFirst { it.itemId == item.itemId }
 
-                val currentCart = if (cartSnapshot.exists()) {
-                    cartSnapshot.toObject(Cart::class.java)!!
-                } else {
-                    Cart(cartId = userId, userId = userId)
-                }
-
-                // Update cart items
-                val updatedItems = currentCart.items.toMutableList()
-                val existingItem = updatedItems.find { it.itemId == menuItem.itemId }
-
-                if (existingItem != null) {
-                    val index = updatedItems.indexOf(existingItem)
-                    updatedItems[index] = existingItem.copy(quantity = existingItem.quantity + 1)
-                } else {
-                    updatedItems.add(CartItem(menuItem.itemId, menuItem.name, menuItem.price, 1))
-                }
-
-                val updatedCart = currentCart.copy(items = updatedItems)
-
-                repository.updateCart(updatedCart)
-                _cartUpdated.postValue(true)
-
-            } catch (e: Exception) {
-                _error.postValue(e.message ?: "Failed to update cart")
-            }
+        if (existing >= 0) {
+            val updatedItem = updatedItems[existing].copy(quantity = updatedItems[existing].quantity + 1)
+            updatedItems[existing] = updatedItem
+        } else {
+            updatedItems.add(CartItem(itemId = item.itemId, name = item.name, price = item.price, quantity = 1))
         }
+
+        val updatedCart = currentCart.copy(items = updatedItems)
+
+        repository.updateCart(updatedCart)
+        _cart.value = updatedCart
+        _cartUpdated.value = true
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        menuListener?.remove()
+        cartListener?.remove()
     }
 }
