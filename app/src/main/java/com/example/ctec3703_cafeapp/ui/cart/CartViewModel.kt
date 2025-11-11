@@ -6,103 +6,77 @@ import androidx.lifecycle.ViewModel
 import com.example.ctec3703_cafeapp.data.model.Cart
 import com.example.ctec3703_cafeapp.data.model.CartItem
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
-import com.example.ctec3703_cafeapp.ui.main.MainViewModel
-import com.google.firebase.firestore.ListenerRegistration
 
 class CartViewModel(
     private val repository: CafeRepository,
-    private val mainViewModel: MainViewModel
+    private val userId: String
 ) : ViewModel() {
 
     private val _cart = MutableLiveData<Cart>()
     val cart: LiveData<Cart> = _cart
 
-    private val _totalPrice = MutableLiveData<Double>(0.0)
-    val totalPrice: LiveData<Double> = _totalPrice
-
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    private var cartListener: ListenerRegistration? = null
+    private val _total = MutableLiveData<Double>(0.0)
+    val total: LiveData<Double> = _total
 
+    fun fetchCart() {
 
-    // Observe cart changes in Firestore
+        repository.getCart(userId).get()
+            .addOnSuccessListener { doc ->
 
-    fun observeCart(cartId: String) {
-        cartListener = repository.getCart(cartId)
-            .addSnapshotListener { snapshot, exception ->
+                val currentCart = doc.toObject(Cart::class.java)
+                if (currentCart != null) _cart.value = currentCart
+                else _cart.value = Cart(cartId = userId, userId = userId)
 
-                if (exception != null) {
-                    _error.value = exception.message
-                    return@addSnapshotListener
-                }
+                calculateTotal()
 
-                val currentCart = snapshot?.toObject(Cart::class.java)
-
-                if (currentCart != null) {
-                    _cart.value = currentCart
-                    calculateTotal(currentCart.items)
-
-                    val totalItems = currentCart.items.sumOf { it.quantity }
-                    mainViewModel.updateCartItemCount(totalItems)
-                }
+            }
+            .addOnFailureListener { e ->
+                _error.value = e.message
             }
     }
 
-
-    // Add item to cart
-
-    fun addItem(cartId: String, item: CartItem) {
-
-        val currentCart = _cart.value ?: Cart(cartId = cartId, userId = "")
-        val existingItemIndex = currentCart.items.indexOfFirst { it.itemId == item.itemId }
-
-        if (existingItemIndex >= 0) {
-            // Increase quantity if item exists
-            val updatedItem = currentCart.items[existingItemIndex].copy(
-                quantity = currentCart.items[existingItemIndex].quantity + item.quantity
-            )
-
-            currentCart.items = currentCart.items.toMutableList().apply {
-                set(existingItemIndex, updatedItem)
-            }
-
-        } else {
-            // Add new item
-            currentCart.items = currentCart.items + item
-        }
-
-        repository.updateCart(currentCart)
-        _cart.value = currentCart
-
-        val totalItems = currentCart.items.sumOf { it.quantity }
-        mainViewModel.updateCartItemCount(totalItems)
+    fun increaseQuantity(item: CartItem) {
+        updateItemQuantity(item, item.quantity + 1)
     }
 
+    fun decreaseQuantity(item: CartItem) {
 
-    // Remove item from cart
+        val newQty = item.quantity - 1
 
-    fun removeItem(cartId: String, itemId: String) {
+        if (newQty <= 0) removeItem(item)
+        else updateItemQuantity(item, newQty)
+    }
+
+    private fun updateItemQuantity(item: CartItem, quantity: Int) {
+
         val currentCart = _cart.value ?: return
-        currentCart.items = currentCart.items.filter { it.itemId != itemId }
-        repository.updateCart(currentCart)
-        _cart.value = currentCart
+        val updatedItems = currentCart.items.map {
+            if (it.itemId == item.itemId) it.copy(quantity = quantity) else it
+        }
+        val updatedCart = currentCart.copy(items = updatedItems)
 
-        val totalItems = currentCart.items.sumOf { it.quantity }
-        mainViewModel.updateCartItemCount(totalItems)
+        _cart.value = updatedCart
+        repository.updateCart(updatedCart)
+        calculateTotal()
     }
 
-    // Calculate total
+    private fun removeItem(item: CartItem) {
 
-    private fun calculateTotal(items: List<CartItem>) {
-        val total = items.sumOf { it.price * it.quantity }
-        _totalPrice.value = total
+        val currentCart = _cart.value ?: return
+        val updatedItems = currentCart.items.filter { it.itemId != item.itemId }
+        val updatedCart = currentCart.copy(items = updatedItems)
+
+        _cart.value = updatedCart
+        repository.updateCart(updatedCart)
+        calculateTotal()
     }
 
-    // Clean up listener when ViewModel destroyed
-
-    override fun onCleared() {
-        super.onCleared()
-        cartListener?.remove()
+    private fun calculateTotal() {
+        val currentCart = _cart.value
+        val sum = currentCart?.items?.sumOf { it.price * it.quantity } ?: 0.0
+        _total.value = sum
     }
 }

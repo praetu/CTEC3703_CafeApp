@@ -6,6 +6,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ctec3703_cafeapp.R
@@ -38,7 +39,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         // Navigate to cart when FAB clicked
         cartFab.setOnClickListener {
             // Add navigation to your CartFragment/Activity here
-            // findNavController().navigate(R.id.action_menuFragment_to_cartFragment)
+            findNavController().navigate(R.id.action_menu_to_cart)
         }
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return

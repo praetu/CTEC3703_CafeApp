@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 // Top-left feedback icon
 
                 feedbackIcon.visibility =
-                    if (destination.id in listOf(R.id.menuFragment, R.id.cartFragment)) View.VISIBLE else View.GONE
+                    if (destination.id in listOf(R.id.menuFragment)) View.VISIBLE else View.GONE
 
                 when (destination.id) {
                     R.id.menuFragment, R.id.profileFragment, R.id.feedbackFragment, R.id.cartFragment -> hideSystemStatusBar()
