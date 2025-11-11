@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="itemName" type="id" />
+    <item name="itemPrice" type="id" />
+    <item name="menuItemName" type="id" />
+</resources>

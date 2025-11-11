@@ -35,6 +35,53 @@ class CafeRepository(private val db: FirebaseFirestore) {
         cartsCollection.document(cart.cartId).set(cart)
     }
 
+    // Add an item to a cart
+    fun addItemToCart(cartId: String, newItem: CartItem) {
+
+        val cartRef = cartsCollection.document(cartId)
+
+        db.runTransaction { transaction ->
+
+            val snapshot = transaction.get(cartRef)
+            val cart = if (snapshot.exists()) {
+                snapshot.toObject(Cart::class.java) ?: Cart(cartId = cartId)
+            } else {
+                Cart(cartId = cartId)
+            }
+
+            // Make items mutable
+            val updatedItems = cart.items.toMutableList()
+
+            // Check if item already exists in cart
+            val existingIndex = updatedItems.indexOfFirst { it.itemId == newItem.itemId }
+
+            if (existingIndex != -1) {
+                val existingItem = updatedItems[existingIndex]
+                updatedItems[existingIndex] = existingItem.copy(quantity = existingItem.quantity + newItem.quantity)
+            } else {
+                updatedItems.add(newItem)
+            }
+
+            // Update cart
+            val updatedCart = cart.copy(
+                items = updatedItems,
+                updatedAt = System.currentTimeMillis()
+            )
+
+            transaction.set(cartRef, updatedCart)
+        }
+    }
+
+    // Optional: observe cart changes
+    fun observeCart(cartId: String, listener: (Cart?) -> Unit) {
+
+        cartsCollection.document(cartId)
+            .addSnapshotListener { snapshot, _ ->
+                val cart = snapshot?.toObject(Cart::class.java)
+                listener(cart)
+            }
+    }
+
     // Order Functions
 
     fun createOrder(order: Order) {

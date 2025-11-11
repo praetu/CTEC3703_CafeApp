@@ -53,14 +53,4 @@
         app:defaultNavHost="true"
         android:layout_marginTop="?attr/actionBarSize"/>
 
-    <TextView
-        android:id="@+id/cafeName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cafe_name"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_anchor="@+id/toolbar"
-        app:layout_anchorGravity="center" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
