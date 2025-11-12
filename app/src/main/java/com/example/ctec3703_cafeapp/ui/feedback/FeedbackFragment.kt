@@ -7,7 +7,9 @@ import android.widget.EditText
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.ctec3703_cafeapp.R
+import com.example.ctec3703_cafeapp.data.repository.CafeRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -16,6 +18,7 @@ class FeedbackFragment : Fragment(R.layout.fragment_feedback) {
     private lateinit var ratingBar: RatingBar
     private lateinit var feedbackEditText: EditText
     private lateinit var submitButton: Button
+    private lateinit var feedbackViewModel: FeedbackViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -25,42 +28,46 @@ class FeedbackFragment : Fragment(R.layout.fragment_feedback) {
         feedbackEditText = view.findViewById(R.id.feedbackEditText)
         submitButton = view.findViewById(R.id.submitFeedbackButton)
 
-        submitButton.setOnClickListener {
+        // Initialize ViewModel with Factory
 
-            val rating = ratingBar.rating.toInt() // 1–5 stars
-            val comment = feedbackEditText.text.toString().trim()
+        val repository = CafeRepository(FirebaseFirestore.getInstance())
+        val factory = FeedbackViewModelFactory(repository)
+        feedbackViewModel = ViewModelProvider(this, factory)[FeedbackViewModel::class.java]
 
-            if (rating == 0) {
+        // Observe submission result
 
-                Toast.makeText(requireContext(), "Please select a rating", Toast.LENGTH_SHORT).show()
+        feedbackViewModel.feedbackResult.observe(viewLifecycleOwner) { success ->
 
-                return@setOnClickListener
-            }
-
-            saveFeedback(rating, comment)
-        }
-    }
-
-    private fun saveFeedback(rating: Int, comment: String) {
-
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val db = FirebaseFirestore.getInstance()
-
-        val feedbackData = hashMapOf(
-            "userId" to uid,
-            "rating" to rating,
-            "comment" to comment,
-            "timestamp" to System.currentTimeMillis()
-        )
-
-        db.collection("feedback").add(feedbackData)
-            .addOnSuccessListener {
+            if (success) {
                 Toast.makeText(requireContext(), "Thank you for your feedback!", Toast.LENGTH_SHORT).show()
                 feedbackEditText.text.clear()
                 ratingBar.rating = 0f
+
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to submit feedback", Toast.LENGTH_SHORT).show()
+        }
+
+        // Observe errors
+
+        feedbackViewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), "Failed to submit feedback: $it", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Submit button
+        submitButton.setOnClickListener {
+
+            val rating = ratingBar.rating.toInt()
+            val comment = feedbackEditText.text.toString().trim()
+
+            if (rating == 0) {
+                Toast.makeText(requireContext(), "Please select a rating", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+
+            feedbackViewModel.saveFeedback(uid, rating, comment)
+        }
     }
 }

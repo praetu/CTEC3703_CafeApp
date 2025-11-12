@@ -4,28 +4,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ctec3703_cafeapp.data.model.Feedback
-import com.example.ctec3703_cafeapp.data.model.states.FeedbackState
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
 
 class FeedbackViewModel(
     private val repository: CafeRepository
 ) : ViewModel() {
 
-    private val _feedbackState = MutableLiveData<FeedbackState>(FeedbackState.Idle)
-    val feedbackState: LiveData<FeedbackState> = _feedbackState
+    private val _feedbackResult = MutableLiveData<Boolean>()
+    val feedbackResult: LiveData<Boolean> = _feedbackResult
 
-    // Submit new feedback
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
-    fun submitFeedback(feedback: Feedback) {
+    fun saveFeedback(userId: String, rating: Int, comment: String) {
 
-        _feedbackState.value = FeedbackState.Loading
+        // Generate an ID for the feedback
+
+        val feedbackId = repository.generateFeedbackId()
+
+        val feedback = Feedback(
+            feedbackId = feedbackId,
+            userId = userId,
+            rating = rating,
+            review = comment,
+            createdAt = System.currentTimeMillis()
+        )
 
         try {
             repository.submitFeedback(feedback)
-            _feedbackState.value = FeedbackState.Success
+            _feedbackResult.value = true
         } catch (e: Exception) {
-            _feedbackState.value = FeedbackState.Error(e.message ?: "Failed to submit feedback")
+            _error.value = e.message
         }
-
     }
 }

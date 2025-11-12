@@ -77,10 +77,4 @@ class AuthViewModel(
                 }
             }
     }
-
-    fun logout() {
-        auth.signOut()
-        _authState.value = AuthState.Idle
-        mainViewModel.clearCurrentUser()
-    }
 }

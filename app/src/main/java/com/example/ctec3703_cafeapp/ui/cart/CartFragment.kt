@@ -22,6 +22,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
     private lateinit var cartAdapter: CartAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.cartRecyclerView)
@@ -35,12 +36,14 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
 
 
         // Initialize ViewModel
+
         cartViewModel = ViewModelProvider(
             this,
             CartViewModelFactory(repository, userId)
         )[CartViewModel::class.java]
 
         // Initialize Adapter with increase/decrease callbacks
+
         cartAdapter = CartAdapter(
             onIncrease = { item: CartItem -> cartViewModel.increaseQuantity(item) },
             onDecrease = { item: CartItem -> cartViewModel.decreaseQuantity(item) }
@@ -49,6 +52,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
         recyclerView.adapter = cartAdapter
 
         // Observe cart LiveData
+
         cartViewModel.cart.observe(viewLifecycleOwner) { cart ->
             cartAdapter.submitList(cart.items)
         }
@@ -68,10 +72,12 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
         }
 
         // Fetch current cart
+
         cartViewModel.fetchCart()
     }
 
     private fun showCheckoutSuccess() {
+
         val dialogView = layoutInflater.inflate(R.layout.dialog_checkout_success, null)
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)

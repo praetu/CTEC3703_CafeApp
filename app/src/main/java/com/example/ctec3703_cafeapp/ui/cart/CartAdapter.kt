@@ -44,6 +44,7 @@ class CartAdapter(
     }
 
     class CartDiffCallback : DiffUtil.ItemCallback<CartItem>() {
+
         override fun areItemsTheSame(oldItem: CartItem, newItem: CartItem) =
             oldItem.itemId == newItem.itemId
 

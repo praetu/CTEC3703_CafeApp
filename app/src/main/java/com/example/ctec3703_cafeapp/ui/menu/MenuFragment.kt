@@ -25,6 +25,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
     private lateinit var cartBadge: TextView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.menuRecyclerView)
@@ -37,8 +38,8 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         cartBadge = view.findViewById(R.id.cartBadge)
 
         // Navigate to cart when FAB clicked
+
         cartFab.setOnClickListener {
-            // Add navigation to your CartFragment/Activity here
             findNavController().navigate(R.id.action_menu_to_cart)
         }
 
@@ -51,11 +52,13 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         )[MenuViewModel::class.java]
 
         // Observe menu items
+
         menuViewModel.menuItems.observe(viewLifecycleOwner) { items ->
             menuAdapter.submitList(items)
         }
 
         // Observe cart updates
+
         menuViewModel.cart.observe(viewLifecycleOwner) { cart ->
 
             val totalQuantity = cart?.items?.sumOf { it.quantity } ?: 0
@@ -69,11 +72,13 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         }
 
         // Toast when item added
+
         menuViewModel.cartUpdated.observe(viewLifecycleOwner) { added ->
             if (added) Toast.makeText(requireContext(), "Item added to cart", Toast.LENGTH_SHORT).show()
         }
 
         // Observe errors
+
         menuViewModel.error.observe(viewLifecycleOwner) { errorMsg ->
             errorMsg?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
         }

@@ -53,7 +53,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
             when (state) {
                 is AuthState.Success -> findNavController().navigate(R.id.menuFragment)
-                is AuthState.Error -> {/* TODO: Show error message */}
                 else -> {}
             }
 

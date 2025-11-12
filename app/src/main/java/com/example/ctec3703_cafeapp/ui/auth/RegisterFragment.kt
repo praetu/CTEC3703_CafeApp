@@ -61,7 +61,6 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 
             when (state) {
                 is AuthState.Success -> findNavController().navigate(R.id.authLandingFragment)
-                is AuthState.Error -> {/* show error */}
                 else -> {}
             }
 

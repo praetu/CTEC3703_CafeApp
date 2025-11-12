@@ -23,7 +23,6 @@ class CartViewModel(
     val total: LiveData<Double> = _total
 
     private val _orderSuccess = MutableLiveData<Boolean>()
-    val orderSuccess: LiveData<Boolean> = _orderSuccess
 
     fun fetchCart() {
 
@@ -79,9 +78,11 @@ class CartViewModel(
     }
 
     private fun calculateTotal() {
+
         val currentCart = _cart.value
         val sum = currentCart?.items?.sumOf { it.price * it.quantity } ?: 0.0
         _total.value = sum
+
     }
 
     fun checkout() {
@@ -94,10 +95,12 @@ class CartViewModel(
         }
 
         // Mark cart as ordered
+
         val orderedCart = currentCart.copy(orderStatus = true)
         repository.updateCart(orderedCart)
 
         // Create new order
+
         val newOrderId = repository.generateOrderId()
         val order = Order(
             orderId = newOrderId,
@@ -112,6 +115,7 @@ class CartViewModel(
         repository.createOrder(order)
 
         // Create a fresh empty cart for user
+
         val freshCart = Cart(
             cartId = userId,
             userId = userId,
@@ -123,6 +127,7 @@ class CartViewModel(
         _cart.value = freshCart
 
         // Notify UI
+
         _orderSuccess.value = true
     }
 }
