@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,31 +9,50 @@
         android:id="@+id/welcomeText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
         android:text="@string/app_name"
-        android:textSize="24sp"
         android:textAlignment="center"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="50sp"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:textColor="@color/purple_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/cafeLogo"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/cafe_logo"
+        android:src="@drawable/cafe_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcomeText" />
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@string/login"
-        app:layout_constraintTop_toBottomOf="@id/welcomeText"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cafeLogo" />
 
     <Button
         android:id="@+id/registerButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="@string/register"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,7 +20,8 @@
         app:layout_constraintEnd_toStartOf="@+id/cartItemPrice"
         app:layout_constraintBottom_toTopOf="@+id/quantityLayout"
         android:ellipsize="end"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:textColor="@color/black"/>
 
     <!-- Item Price -->
     <TextView
@@ -30,7 +31,8 @@
         android:text="£0.00"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/black"/>
 
     <!-- Quantity controls -->
     <LinearLayout
@@ -58,7 +60,8 @@
             android:padding="8dp"
             android:text="1"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
 
         <ImageButton
             android:id="@+id/increaseButton"

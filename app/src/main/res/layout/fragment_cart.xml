@@ -13,7 +13,8 @@
         android:text="Your Cart"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:paddingBottom="8dp"/>
+        android:paddingBottom="8dp"
+        android:textColor="@color/black"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecyclerView"
@@ -27,21 +28,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:padding="16dp"
+        android:background="@drawable/rounded_dialog_bg"
+        android:elevation="4dp">
 
         <TextView
             android:id="@+id/totalPriceText"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Total: £0.00"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
 
         <Button
             android:id="@+id/checkoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Checkout"/>
+            android:text="Checkout" />
+
     </LinearLayout>
 </LinearLayout>

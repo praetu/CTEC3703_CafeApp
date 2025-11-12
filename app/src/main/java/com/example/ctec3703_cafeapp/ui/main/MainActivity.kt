@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         feedbackIcon = toolbar.findViewById(R.id.feedbackIcon)
 
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // NavController
 
@@ -52,7 +53,6 @@ class MainActivity : AppCompatActivity() {
 
             if (toolbar.isVisible) {
 
-                toolbar.title = getString(R.string.cafe_name)
                 toolbar.navigationIcon =
 
                     if (destination.id in listOf(

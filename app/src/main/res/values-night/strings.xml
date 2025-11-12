@@ -8,4 +8,5 @@
     <string name="menu_item_image" />
     <string name="success">success</string>
     <string name="checkout_success">Checkout Success!</string>
+    <string name="cafe_logo">logo</string>
 </resources>

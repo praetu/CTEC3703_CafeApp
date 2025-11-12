@@ -4,46 +4,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/app_background">
 
     <!-- Toolbar -->
+
+    <!-- NavHostFragment to hold all fragments -->
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:titleTextColor="@color/white">
+        app:layout_anchor="@+id/toolbar"
+        app:layout_anchorGravity="center">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="17dp">
+        <!-- Centered floating title -->
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="monospace"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            <ImageButton
-                android:id="@+id/feedbackIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_feedback"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+        <!-- Top-left icon -->
+        <ImageButton
+            android:id="@+id/feedbackIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_feedback" />
 
-            <ImageButton
-                android:id="@+id/profileIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_profile"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Top-right icon -->
+        <ImageButton
+            android:id="@+id/profileIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="17dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_profile" />
 
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <!-- NavHostFragment to hold all fragments -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
