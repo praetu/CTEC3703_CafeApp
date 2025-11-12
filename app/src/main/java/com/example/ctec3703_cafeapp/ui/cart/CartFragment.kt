@@ -2,9 +2,12 @@ package com.example.ctec3703_cafeapp.ui.cart
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ctec3703_cafeapp.R
@@ -24,10 +27,12 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.cartRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        val totalTextView = view.findViewById<TextView>(R.id.totalPriceText)
+        val checkoutButton = view.findViewById<Button>(R.id.checkoutButton)
+
         val repository = CafeRepository(FirebaseFirestore.getInstance())
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        val totalTextView = view.findViewById<TextView>(R.id.totalPriceText)
 
         // Initialize ViewModel
         cartViewModel = ViewModelProvider(
@@ -52,14 +57,32 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
             totalTextView.text = "£%.2f".format(total)
         }
 
-        // Observe errors if needed
-        cartViewModel.error.observe(viewLifecycleOwner) { errorMsg ->
-            errorMsg?.let {
-                // Optional: show error toast
+        checkoutButton.setOnClickListener {
+
+            val currentCart = cartViewModel.cart.value
+
+            if (currentCart != null && currentCart.items.isNotEmpty()) {
+                cartViewModel.checkout()
+                showCheckoutSuccess()
             }
         }
 
         // Fetch current cart
         cartViewModel.fetchCart()
+    }
+
+    private fun showCheckoutSuccess() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_checkout_success, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        dialog.show()
+
+        dialogView.postDelayed({
+            dialog.dismiss()
+            findNavController().navigate(R.id.profileFragment)
+        }, 1500)
     }
 }

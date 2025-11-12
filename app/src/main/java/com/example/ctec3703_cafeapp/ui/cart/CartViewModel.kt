@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ctec3703_cafeapp.data.model.Cart
 import com.example.ctec3703_cafeapp.data.model.CartItem
+import com.example.ctec3703_cafeapp.data.model.Order
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
 
 class CartViewModel(
@@ -20,6 +21,9 @@ class CartViewModel(
 
     private val _total = MutableLiveData<Double>(0.0)
     val total: LiveData<Double> = _total
+
+    private val _orderSuccess = MutableLiveData<Boolean>()
+    val orderSuccess: LiveData<Boolean> = _orderSuccess
 
     fun fetchCart() {
 
@@ -78,5 +82,47 @@ class CartViewModel(
         val currentCart = _cart.value
         val sum = currentCart?.items?.sumOf { it.price * it.quantity } ?: 0.0
         _total.value = sum
+    }
+
+    fun checkout() {
+
+        val currentCart = _cart.value ?: return
+
+        if (currentCart.items.isEmpty()) {
+            _error.value = "Your cart is empty."
+            return
+        }
+
+        // Mark cart as ordered
+        val orderedCart = currentCart.copy(orderStatus = true)
+        repository.updateCart(orderedCart)
+
+        // Create new order
+        val newOrderId = repository.generateOrderId()
+        val order = Order(
+            orderId = newOrderId,
+            userId = currentCart.userId,
+            cartId = currentCart.cartId,
+            items = currentCart.items,
+            totalPrice = currentCart.items.sumOf { it.price * it.quantity },
+            status = "Completed",
+            paymentStatus = "Paid"
+        )
+
+        repository.createOrder(order)
+
+        // Create a fresh empty cart for user
+        val freshCart = Cart(
+            cartId = userId,
+            userId = userId,
+            items = emptyList(),
+            orderStatus = false
+        )
+
+        repository.updateCart(freshCart)
+        _cart.value = freshCart
+
+        // Notify UI
+        _orderSuccess.value = true
     }
 }

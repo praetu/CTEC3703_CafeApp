@@ -92,6 +92,10 @@ class CafeRepository(private val db: FirebaseFirestore) {
 
     fun getOrders() = ordersCollection
 
+    fun generateOrderId(): String {
+        return ordersCollection.document().id
+    }
+
     // Feedback Functions
 
     fun submitFeedback(feedback: Feedback) {
