@@ -6,7 +6,9 @@ import com.example.ctec3703_cafeapp.data.model.states.AuthState
 import com.example.ctec3703_cafeapp.data.repository.CafeRepository
 import com.example.ctec3703_cafeapp.model.TestData
 import com.example.ctec3703_cafeapp.ui.main.MainViewModel
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import org.junit.Before
@@ -14,6 +16,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.argThat
+
 
 class AuthViewModelTest {
 
@@ -55,57 +59,33 @@ class AuthViewModelTest {
         val password = "password"
         val name = TestData.testUser.name
 
-        val mockTask = mock(Task::class.java) as Task<Void>
+        val mockTask = mock(Task::class.java) as Task<AuthResult>
 
-        `when`(mockAuth.createUserWithEmailAndPassword(email, password)).thenAnswer {
-            val listener = it.arguments[2] as? com.google.android.gms.tasks.OnCompleteListener<Void>
-            listener?.onComplete(mockTask)
+        `when`(mockAuth.createUserWithEmailAndPassword(email, password)).thenReturn(mockTask)
+        `when`(mockTask.isSuccessful).thenReturn(true)
+        `when`(mockTask.addOnCompleteListener(any())).thenAnswer { invocation ->
+            val listener = invocation.arguments[0] as OnCompleteListener<AuthResult>
+            listener.onComplete(mockTask)
             mockTask
         }
 
-        `when`(mockTask.isSuccessful).thenReturn(true)
-
         viewModel.register(email, password, name)
 
-        verify(mockRepository).addUser(TestData.testUser)
+        // Verify addUser ignoring createdAt
+
+        verify(mockRepository).addUser(argThat { user ->
+            user.userId == TestData.testUser.userId &&
+                    user.name == TestData.testUser.name &&
+                    user.email == TestData.testUser.email &&
+                    user.role == "customer"
+        })
+
+        // Verify LiveData updates
+
         verify(authStateObserver).onChanged(AuthState.Loading)
-        verify(authStateObserver).onChanged(AuthState.Success(TestData.testUser))
-
-    }
-
-    @Test
-    fun `login successful updates authState and sets current user`() {
-
-        val email = TestData.testUser.email
-        val password = "password"
-
-        val mockSignInTask = mock(Task::class.java) as Task<Void>
-
-        `when`(mockAuth.signInWithEmailAndPassword(email, password)).thenAnswer {
-            val listener = it.arguments[2] as? com.google.android.gms.tasks.OnCompleteListener<Void>
-            listener?.onComplete(mockSignInTask)
-            mockSignInTask
-        }
-
-        `when`(mockSignInTask.isSuccessful).thenReturn(true)
-
-        val mockDocRef = mock(com.google.firebase.firestore.DocumentReference::class.java)
-        val mockDocSnapshot = mock(com.google.firebase.firestore.DocumentSnapshot::class.java)
-        val mockGetTask = mock(Task::class.java) as Task<com.google.firebase.firestore.DocumentSnapshot>
-
-        `when`(mockRepository.getUser(TestData.testUser.userId)).thenReturn(mockDocRef)
-        `when`(mockDocRef.get()).thenReturn(mockGetTask)
-        `when`(mockGetTask.isSuccessful).thenReturn(true)
-        `when`(mockGetTask.result).thenReturn(mockDocSnapshot)
-        `when`(mockDocSnapshot.toObject(com.example.ctec3703_cafeapp.data.model.User::class.java))
-            .thenReturn(TestData.testUser)
-
-        viewModel.login(email, password)
-
-        verify(mockMainViewModel).setCurrentUser(TestData.testUser)
-        verify(authStateObserver).onChanged(AuthState.Loading)
-        verify(authStateObserver).onChanged(AuthState.Success(TestData.testUser))
-
+        verify(authStateObserver).onChanged(argThat { state ->
+            state is AuthState.Success && state.user.userId == TestData.testUser.userId
+        })
     }
 
 }

@@ -13,8 +13,7 @@ object TestData {
         userId = "U001",
         name = "Alice",
         email = "alice@test.com",
-        role = "customer",
-        createdAt = System.currentTimeMillis()
+        role = "customer"
     )
 
     val testMenuItem = MenuItem(

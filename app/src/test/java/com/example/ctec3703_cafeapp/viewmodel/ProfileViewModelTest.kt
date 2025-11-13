@@ -88,29 +88,43 @@ class ProfileViewModelTest {
     @Test
     fun `fetchUserOrders sets error LiveData when exception occurs`() {
 
+        // Mocks
+
         val mockCollection = mock(CollectionReference::class.java)
         val mockQuery = mock(Query::class.java)
         val mockListenerRegistration = mock(ListenerRegistration::class.java)
 
-        // Correct exception type
+        // Exception to simulate Firestore failure
 
-        val exception = FirebaseFirestoreException(
-            "Firestore failed",
-            FirebaseFirestoreException.Code.ABORTED
-        )
+        val mockException = mock(FirebaseFirestoreException::class.java)
+        `when`(mockException.message).thenReturn("Firestore failed")
+
+        // Repository returns the mocked collection
 
         `when`(mockRepository.getOrders()).thenReturn(mockCollection)
+
+        // Collection -> Query
+
         `when`(mockCollection.whereEqualTo("userId", testUserId)).thenReturn(mockQuery)
-        `when`(mockQuery.addSnapshotListener(any())).thenAnswer { invocation ->
 
-            val listener = invocation.arguments[0] as com.google.firebase.firestore.EventListener<QuerySnapshot>
+        // Query -> addSnapshotListener triggers error
 
-            listener.onEvent(null, exception)
-            mockListenerRegistration
+        `when`(mockQuery.addSnapshotListener(any<com.google.firebase.firestore.EventListener<QuerySnapshot>>()))
+            .thenAnswer { invocation ->
 
-        }
+                val listener =
+                    invocation.arguments[0] as com.google.firebase.firestore.EventListener<QuerySnapshot>
+
+                listener.onEvent(null, mockException) // trigger the error callback
+                mockListenerRegistration
+
+            }
+
+        // Call ViewModel function
 
         viewModel.fetchUserOrders()
+
+        // Verify LiveData updated with the error
 
         verify(errorObserver).onChanged("Firestore failed")
 

@@ -10,6 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
 
 class FeedbackViewModelTest {
 
@@ -47,7 +48,7 @@ class FeedbackViewModelTest {
 
         // Verify repository called with any Feedback
 
-        verify(mockRepository).submitFeedback(any(Feedback::class.java))
+        verify(mockRepository).submitFeedback(any<Feedback>())
 
         // Verify LiveData updated
 
@@ -59,7 +60,7 @@ class FeedbackViewModelTest {
     fun `saveFeedback repository throws exception sets error`() {
 
         `when`(mockRepository.generateFeedbackId()).thenReturn("F002")
-        doThrow(RuntimeException("Failed to save")).`when`(mockRepository).submitFeedback(any(Feedback::class.java))
+        doThrow(RuntimeException("Failed to save")).`when`(mockRepository).submitFeedback(any<Feedback>())
 
         viewModel.saveFeedback(TestData.testUser.userId, rating = 4, comment = "Good")
 

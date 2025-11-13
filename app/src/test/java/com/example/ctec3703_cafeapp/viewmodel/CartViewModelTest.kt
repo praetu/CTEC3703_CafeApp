@@ -13,6 +13,7 @@ import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.junit.Assert.assertEquals
+import org.mockito.kotlin.any
 
 class CartViewModelTest {
 
@@ -70,7 +71,7 @@ class CartViewModelTest {
 
         assertEquals(2, updatedCart.items[0].quantity)
         verify(mockRepository).updateCart(updatedCart)
-        assertEquals(4.0, cartViewModel.total.value)
+        assertEquals(4.0, cartViewModel.total.value, 0.001)
 
     }
 
@@ -86,7 +87,7 @@ class CartViewModelTest {
 
         assertEquals(0, updatedCart.items.size)
         verify(mockRepository).updateCart(updatedCart)
-        assertEquals(0.0, cartViewModel.total.value)
+        assertEquals(0.0, cartViewModel.total.value, 0.001)
 
     }
 
@@ -105,7 +106,7 @@ class CartViewModelTest {
 
         assertEquals(0, freshCart.items.size)
         assertEquals(false, freshCart.orderStatus)
-        verify(mockRepository).createOrder(any(Order::class.java))
+        verify(mockRepository).createOrder(any<Order>())
         verify(orderSuccessObserver).onChanged(true)
 
     }
