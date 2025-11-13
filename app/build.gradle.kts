@@ -66,9 +66,6 @@ dependencies {
     // Image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
-    // -------------------------
-    // Testing Dependencies
-    // -------------------------
 
     // JUnit
     testImplementation("junit:junit:4.13.2")

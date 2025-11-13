@@ -37,7 +37,7 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         cartFab = view.findViewById(R.id.cartFab)
         cartBadge = view.findViewById(R.id.cartBadge)
 
-        // Navigate to cart when FAB clicked
+        // Navigate to cart when clicked
 
         cartFab.setOnClickListener {
             findNavController().navigate(R.id.action_menu_to_cart)

@@ -65,12 +65,12 @@ class MainActivity : AppCompatActivity() {
 
                 toolbar.setNavigationOnClickListener { navController.popBackStack() }
 
-                // Top-right profile icon
+                // profile icon
 
                 profileIcon.visibility =
                     if (destination.id in listOf(R.id.menuFragment, R.id.cartFragment)) View.VISIBLE else View.GONE
 
-                // Top-left feedback icon
+                // feedback icon
 
                 feedbackIcon.visibility =
                     if (destination.id in listOf(R.id.menuFragment)) View.VISIBLE else View.GONE

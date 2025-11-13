@@ -6,8 +6,8 @@ data class Order(
     val cartId: String = "",
     val items: List<CartItem> = emptyList(),
     val totalPrice: Double = 0.0,
-    val status: String = "Pending",      // e.g. Pending, Preparing, Ready, Completed
-    val paymentStatus: String = "Unpaid", // e.g. Unpaid, Paid, Refunded
+    val status: String = "Pending",
+    val paymentStatus: String = "Unpaid",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 )

@@ -39,8 +39,9 @@ class MenuAdapter(
             priceText.text = "£%.2f".format(item.price)
 
             // Load image with Glide
+
             Glide.with(itemView)
-                .load(item.imageUrl) // Ensure MenuItem has imageUrl property
+                .load(item.imageUrl)
                 .placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.placeholder_image)
                 .into(imageView)

@@ -6,5 +6,5 @@ data class Cart(
     var items: List<CartItem> = emptyList(),
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
-    val orderStatus: Boolean = false  // false = active, true = order placed
+    val orderStatus: Boolean = false
 )

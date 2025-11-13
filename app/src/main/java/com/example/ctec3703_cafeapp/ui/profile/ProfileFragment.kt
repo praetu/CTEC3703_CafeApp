@@ -64,15 +64,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             profileAdapter.submitList(orders)
         }
 
-        // Observe errors (optional)
-
-        profileViewModel.error.observe(viewLifecycleOwner) { error ->
-            if (error != null) {
-                // Optional: show toast
-            }
-        }
-
-
         // Fetch orders
         profileViewModel.fetchUserOrders()
 
