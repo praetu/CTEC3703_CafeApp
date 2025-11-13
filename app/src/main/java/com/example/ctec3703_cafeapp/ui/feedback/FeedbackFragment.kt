@@ -55,6 +55,7 @@ class FeedbackFragment : Fragment(R.layout.fragment_feedback) {
         }
 
         // Submit button
+
         submitButton.setOnClickListener {
 
             val rating = ratingBar.rating.toInt()

@@ -24,6 +24,8 @@ class CartViewModel(
 
     private val _orderSuccess = MutableLiveData<Boolean>()
 
+    val orderSuccess: LiveData<Boolean> = _orderSuccess
+
     fun fetchCart() {
 
         repository.getCart(userId).get()

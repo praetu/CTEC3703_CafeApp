@@ -15,9 +15,11 @@ class AuthLandingFragment : Fragment(R.layout.fragment_auth_landing) {
     private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         // Check if user is already logged in
+
         firebaseAuth.currentUser?.let {
 
             findNavController().navigate(R.id.menuFragment)

@@ -90,14 +90,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideSystemStatusBar() {
+
         val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+
         windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
         windowInsetsController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
     private fun showSystemStatusBar() {
+
         val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+
         windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
     }
 
